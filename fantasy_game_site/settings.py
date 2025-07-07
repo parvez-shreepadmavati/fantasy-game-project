@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-m20*5&a!zzd2wm%k@m+c!))4y$n+0tt5e9zvh$7&3idi2xdgee
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['c795-103-240-204-206.ngrok-free.app', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -42,6 +42,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_secure_token',
+    'drf_yasg2'
 ]
 
 LOCAL_APPS = [
@@ -81,7 +82,9 @@ AUTH_USER_MODEL = 'custom_auth.ApplicationUser'
 
 WSGI_APPLICATION = 'fantasy_game_site.wsgi.application'
 
-
+AUTHENTICATION_BACKENDS = (
+    'custom_auth.auth_backends.model_backend.CustomModelBackend',
+)
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -110,9 +113,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_fantasy_game',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3307',
     },
 }
 # Password validation
@@ -132,6 +135,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'drf_secure_token.authentication.SecureTokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 
 
 # Internationalization
