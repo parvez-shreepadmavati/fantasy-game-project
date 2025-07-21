@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from django.utils.translation import ugettext as _
+# from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.exceptions import PermissionDenied
 
