@@ -2,7 +2,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_secure_token.models import Token
 from .serializers import SignUpSerializer, LoginSerializer, ApplicationUserReadSerializer , ChangePasswordSerializer
 from .utils import generate_4_digit_code
@@ -15,6 +15,8 @@ class GenerateVerificationCodeAPIView(APIView):
 
 
 class SignUpAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
@@ -27,6 +29,7 @@ class SignUpAPIView(APIView):
 
 
 class LoginAPIView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
