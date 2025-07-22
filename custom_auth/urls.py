@@ -9,4 +9,5 @@ urlpatterns = [
     path('signup/', api.SignUpAPIView.as_view(), name='signup'),
     path('login/', api.LoginAPIView.as_view(), name='login'),
     path('change-password/', api.ChangePasswordView.as_view(), name='change-password'),
+    path('logout/', api.LogoutAPIView.as_view(), name='logout'),
 ]

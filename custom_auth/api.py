@@ -9,6 +9,8 @@ from .utils import generate_4_digit_code
 
 
 class GenerateVerificationCodeAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         code = generate_4_digit_code()
         return Response({"verification_code": code}, status=status.HTTP_200_OK)
@@ -59,3 +61,14 @@ class ChangePasswordView(APIView):
             return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class LogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+
+        # Delete the token to force re-authentication next time
+        Token.objects.filter(user=user).delete()
+
+        return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
