@@ -13,5 +13,5 @@ urlpatterns = [
 
     
     path('users', api.UserListAPIView.as_view(), name='users'),
-    path('users/<uuid:uuid>/', api.UserDetailAPIView.as_view(), name='user-detail'),
+    path('users/<uuid:uuid>', api.UserDetailAPIView.as_view(), name='user-detail'),
 ]
