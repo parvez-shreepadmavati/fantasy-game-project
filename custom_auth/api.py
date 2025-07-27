@@ -1,9 +1,11 @@
 # views.py
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_secure_token.models import Token
+from .models import ApplicationUser
 from .serializers import SignUpSerializer, LoginSerializer, ApplicationUserReadSerializer , ChangePasswordSerializer
 from .utils import generate_4_digit_code
 
@@ -72,3 +74,18 @@ class LogoutAPIView(APIView):
         Token.objects.filter(user=user).delete()
 
         return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+
+
+class UserListAPIView(ListAPIView):
+    queryset = ApplicationUser.objects.all()
+    serializer_class = ApplicationUserReadSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class UserDetailAPIView(RetrieveAPIView):
+    queryset = ApplicationUser.objects.all()
+    serializer_class = ApplicationUserReadSerializer
+    lookup_field = 'uuid'  # Make sure this matches your URL pattern
+    permission_classes = [IsAuthenticated]
+
+
