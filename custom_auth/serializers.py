@@ -142,3 +142,14 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
         return user
 
+class ApplicationUserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationUser
+        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number']  # add any updatable fields
+        extra_kwargs = {
+            'email': {'required': False},
+            'username': {'required': False},
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+            'phone_number': {'required': False},
+        }
