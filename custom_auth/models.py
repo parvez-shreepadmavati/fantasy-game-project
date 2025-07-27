@@ -76,6 +76,16 @@ class ApplicationUser(
     otp = models.PositiveSmallIntegerField(_('otp'), null=True, blank=True)
 
     date_of_birth = models.DateField(_('date of birth'), null=True, blank=True)
+    first_name = models.CharField(_('first name'), max_length=30, null=True, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, null=True, blank=True)
+    phone_number = models.CharField(
+        max_length=15,
+        unique=True,
+        null=True,
+        blank=True,
+        verbose_name=_('phone number'),
+        help_text=_('Include country code, e.g. +91XXXXXXXXXX')
+    )
     # bind_email = models.EmailField(_('bind email'), null=True, blank=True, unique=True,
     #                                error_messages={'unique': _('Failed! This Email is bound to another account.')}, )
     # bind_email_verification = models.PositiveSmallIntegerField(_('bind email verification'), null=True, blank=True)
