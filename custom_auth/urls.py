@@ -14,4 +14,6 @@ urlpatterns = [
     
     path('users', api.UserListAPIView.as_view(), name='users'),
     path('users/<uuid:uuid>', api.UserDetailAPIView.as_view(), name='user-detail'),
+    path('user-update', api.UserUpdateAPIView.as_view(), name='user-update'),
+    # path('users/<uuid:uuid>/update', api.UserUpdateAPIView.as_view(), name='user-update'),
 ]
