@@ -1,12 +1,12 @@
 # views.py
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_secure_token.models import Token
 from .models import ApplicationUser
-from .serializers import SignUpSerializer, LoginSerializer, ApplicationUserReadSerializer , ChangePasswordSerializer
+from .serializers import SignUpSerializer, LoginSerializer, ApplicationUserReadSerializer , ChangePasswordSerializer, ApplicationUserUpdateSerializer
 from .utils import generate_4_digit_code
 
 
@@ -88,4 +88,20 @@ class UserDetailAPIView(RetrieveAPIView):
     lookup_field = 'uuid'  # Make sure this matches your URL pattern
     permission_classes = [IsAuthenticated]
 
+class UserUpdateAPIView(UpdateAPIView):
+    queryset = ApplicationUser.objects.all()
+    serializer_class = ApplicationUserUpdateSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'uuid'  # or use 'pk' if you want to use primary key
+
+    def get_object(self):
+        # Option 1: Allow users to update themselves only
+        return self.request.user
+
+        # Option 2: Allow admin to update any user
+        # uuid = self.kwargs.get("uuid")
+        # return get_object_or_404(ApplicationUser, uuid=uuid)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
