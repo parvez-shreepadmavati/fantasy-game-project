@@ -12,6 +12,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+# Render database import
+import dj_database_url
+import os
+
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m20*5&a!zzd2wm%k@m+c!))4y$n+0tt5e9zvh$7&3idi2xdgee'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('LOCAL_DEBUG')
 
-ALLOWED_HOSTS = ['c795-103-240-204-206.ngrok-free.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = env.list('LIVE_ALLOWED_HOSTS')
 
 
 # Application definition
@@ -42,7 +52,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_secure_token',
-    'drf_yasg2'
+    'drf_yasg',
+    'corsheaders'
 ]
 
 LOCAL_APPS = [
@@ -54,6 +65,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -62,6 +74,15 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'fantasy_game_site.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # your Vite frontend
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True  # ⚠️ Not recommended for production
+
+APPEND_SLASH = False
 
 TEMPLATES = [
     {
@@ -108,15 +129,22 @@ AUTHENTICATION_BACKENDS = (
 # }
 
 #Databse MySQL
+# DATABASES = {
+# 'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'db_fantasy_game',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     },
+# }
+
+# Render databse
+
 DATABASES = {
-'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_fantasy_game',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3307',
-    },
+    "default": dj_database_url.parse(env('EXTERNAL_DATABASE_URL'))
+# "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

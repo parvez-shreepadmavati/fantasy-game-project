@@ -1,20 +1,26 @@
 # views.py
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_secure_token.models import Token
+from .models import ApplicationUser
 from .serializers import SignUpSerializer, LoginSerializer, ApplicationUserReadSerializer , ChangePasswordSerializer
 from .utils import generate_4_digit_code
 
 
 class GenerateVerificationCodeAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         code = generate_4_digit_code()
         return Response({"verification_code": code}, status=status.HTTP_200_OK)
 
 
 class SignUpAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
@@ -27,6 +33,7 @@ class SignUpAPIView(APIView):
 
 
 class LoginAPIView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -55,4 +62,30 @@ class ChangePasswordView(APIView):
             serializer.save()
             return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+
+        # Delete the token to force re-authentication next time
+        Token.objects.filter(user=user).delete()
+
+        return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+
+
+class UserListAPIView(ListAPIView):
+    queryset = ApplicationUser.objects.all()
+    serializer_class = ApplicationUserReadSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class UserDetailAPIView(RetrieveAPIView):
+    queryset = ApplicationUser.objects.all()
+    serializer_class = ApplicationUserReadSerializer
+    lookup_field = 'uuid'  # Make sure this matches your URL pattern
+    permission_classes = [IsAuthenticated]
+
 

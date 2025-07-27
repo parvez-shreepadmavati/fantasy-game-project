@@ -131,7 +131,7 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError({"new_password": "Password must contain at least one digit."})
 
         # Must not be same as username or nickname
-        if new_password.lower() == user.username.lower() or new_password.lower() == user.nickname.lower():
+        if new_password.lower() == user.username.lower():
             raise serializers.ValidationError({"new_password": "Password must not be the same as username or nickname."})
 
         return data
